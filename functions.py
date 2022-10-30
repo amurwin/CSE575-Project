@@ -1,4 +1,8 @@
 import numpy as np
+import pandas as pd
+
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 def normalize(array):
   # w_ij = a_ij / sum_j (a_ij)
@@ -17,3 +21,33 @@ def normalize(array):
         # w_ij = a_ij / sum_j (a_ij)
         w[i][j] = array[i][j] / s
   return w
+
+def getLabel(label, order):
+  # 0 = sex
+  # 1 = math
+  # 2 = creativity
+
+  mapping = {0: 'Sex', 1: 'FSIQ', 2: 'CCI'}
+
+  labels = pd.read_csv('../metainfo.csv')
+
+  #reorder to match data
+  labels = labels.set_index('URSI')
+  labels = labels.reindex(index=order)
+  labels.reset_index()
+
+  return labels[mapping[label]]
+
+
+
+def linReg(X_train, y_train, X_test, y_test):
+
+  LR = LinearRegression()
+  LR = LR.fit(X_train, y_train)
+  W = LR.coef_
+  b = LR.intercept_
+  print("W: ", W)
+  print("b: ", b)
+  y_predict = LR.predict(X_test)
+  error = np.sqrt(mean_squared_error(y_test, y_predict))
+  print("Root mean squared error: ", error)
