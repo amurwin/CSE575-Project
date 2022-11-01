@@ -8,4 +8,4 @@ mat = scipy.io.loadmat('brainnetworks/smallgraphs/M87102217_fiber.mat')
 array = mat['fibergraph'].toarray()
 # print(array)
 
-array2 = pd.read_csv('brannetworks/CSVdata/M87102217_fiber.csv').values
+array2 = pd.read_csv('brainnetworks/CSVdata/M87102217_fiber.csv').values
