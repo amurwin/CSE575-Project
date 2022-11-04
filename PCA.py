@@ -1,3 +1,6 @@
+from sklearn import cluster
+from sklearn.cluster import KMeans
+
 from functions import *
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
@@ -47,10 +50,33 @@ X_test_pca = np.matmul(X_test, matrix.T)
 # Built in PCA
 pca = PCA(n_components=n_components, svd_solver='full').fit(X_train)
 X_train_pca = pca.transform(X_train)
+
 X_test_pca = pca.transform(X_test)
+#plot PCA components to see what K value to use
+PCA_components = pd.DataFrame(X_train_pca)
+ks = range(1, 10)
+inertias = []
+for k in ks:
+    # Create a KMeans instance with k clusters: model
+    model = KMeans(n_clusters=k)
 
+    # Fit model to samples
+    model.fit(PCA_components.iloc[:, :3])
 
+    # Append the inertia to the list of inertias
+    inertias.append(model.inertia_)
 
+plt.plot(ks, inertias, '-o', color='black')
+plt.xlabel('number of clusters, k')
+plt.ylabel('inertia')
+plt.xticks(ks)
+plt.show()
+#from kmeans, elbow point is roughly 4
+k_means = cluster.KMeans(n_clusters = 4)
+k_means.fit(X_train_pca)
+#note: I still need to figure out if I am doing this right or not. doesn't feel right
+print("kmeans")
+print(k_means.labels_[::10])
 # PCA STATS - Using built-in PCA, needs to be transfered over
 for i in range(n_components):
     print('Percentage of variance explained by PC {}: {}'.format(i+1, pca.explained_variance_ratio_[i]))
