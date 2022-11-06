@@ -4,6 +4,7 @@ from sklearn.cluster import KMeans
 from functions import *
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -50,7 +51,6 @@ X_test_pca = np.matmul(X_test, matrix.T)
 # Built in PCA
 pca = PCA(n_components=n_components, svd_solver='full').fit(X_train)
 X_train_pca = pca.transform(X_train)
-
 X_test_pca = pca.transform(X_test)
 #plot PCA components to see what K value to use
 PCA_components = pd.DataFrame(X_train_pca)
@@ -74,9 +74,13 @@ plt.show()
 #from kmeans, elbow point is roughly 4
 k_means = cluster.KMeans(n_clusters = 4)
 k_means.fit(X_train_pca)
-#note: I still need to figure out if I am doing this right or not. doesn't feel right
-print("kmeans")
-print(k_means.labels_[::10])
+#note: k_means might be useful for data visualization but thats about it
+#KNN via SKLEARN
+knn = KNeighborsClassifier()
+knn.fit(X_train_pca,y_train)
+testResult = knn.predict(X_test_pca)
+print("KNN Prediction",testResult)
+print("Given Test Data",y_test.tolist())
 # PCA STATS - Using built-in PCA, needs to be transfered over
 for i in range(n_components):
     print('Percentage of variance explained by PC {}: {}'.format(i+1, pca.explained_variance_ratio_[i]))
