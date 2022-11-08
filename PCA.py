@@ -2,6 +2,7 @@ from sklearn import cluster
 from sklearn.cluster import KMeans
 
 from functions import *
+from KNN import *
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
@@ -27,12 +28,13 @@ creativity = getLabel(2, order)
 
 X_train, X_test, y_train, y_test = train_test_split(data, math, test_size=0.2, random_state=0)
 
-
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
+#####################################################################
 # PCA
+
 n_components = 20
 
 # Manual PCA
@@ -52,6 +54,21 @@ X_test_pca = np.matmul(X_test, matrix.T)
 pca = PCA(n_components=n_components, svd_solver='full').fit(X_train)
 X_train_pca = pca.transform(X_train)
 X_test_pca = pca.transform(X_test)
+
+# PCA STATS - Using built-in PCA, needs to be transfered over
+for i in range(n_components):
+    print('Percentage of variance explained by PC {}: {}'.format(i+1, pca.explained_variance_ratio_[i]))
+print('Total variance explained by 20 PCs: {}'.format(np.sum(pca.explained_variance_ratio_)))
+
+fig, ax = plt.subplots(1)
+ax.plot(range(1, 21), [sum(pca.explained_variance_ratio_.tolist()[0:x+1]) for x in range(0, len(pca.explained_variance_ratio_))])
+ax.set_xlabel('Num principle components')
+ax.set_ylabel('Fraction of Total Variance Explained')
+# print graph with `fig`
+
+#####################################################################
+# KMEANS
+
 #plot PCA components to see what K value to use
 PCA_components = pd.DataFrame(X_train_pca)
 ks = range(1, 10)
@@ -74,27 +91,38 @@ plt.show()
 #from kmeans, elbow point is roughly 4
 k_means = cluster.KMeans(n_clusters = 4)
 k_means.fit(X_train_pca)
+
 #note: k_means might be useful for data visualization but thats about it
+
+########################################################################
+# KNN
+
 #KNN via SKLEARN
-knn = KNeighborsClassifier()
-knn.fit(X_train_pca,y_train)
-testResult = knn.predict(X_test_pca)
+knn_classifier = KNeighborsClassifier()
+knn_classifier.fit(X_train_pca,y_train)
+testResult = knn_classifier.predict(X_test_pca)
 print("KNN Prediction",testResult)
 print("Given Test Data",y_test.tolist())
-# PCA STATS - Using built-in PCA, needs to be transfered over
-for i in range(n_components):
-    print('Percentage of variance explained by PC {}: {}'.format(i+1, pca.explained_variance_ratio_[i]))
-print('Total variance explained by 20 PCs: {}'.format(np.sum(pca.explained_variance_ratio_)))
 
-fig, ax = plt.subplots(1)
-ax.plot(range(1, 21), [sum(pca.explained_variance_ratio_.tolist()[0:x+1]) for x in range(0, len(pca.explained_variance_ratio_))])
-ax.set_xlabel('Num principle components')
-ax.set_ylabel('Fraction of Total Variance Explained')
-# print graph with `fig`
+# Manual KNN
+DstType = 1
+k = 5
 
+X_full_pca = np.concatenate((X_train_pca, X_test_pca))
+y_full = np.concatenate((y_train, y_test))
+
+for i in range(91, len(y_full)):
+    train_label = y_full.copy().tolist()
+    del train_label[i]
+    train_feat = X_full_pca.copy().tolist()
+    del train_feat[i]
+
+    pred_label = knn(X_full_pca[i], train_label, train_feat, k, DstType)
+    print('Document ' + str(i) + ' groundtruth ' + str(y_full[i]) + ' predicted as ' + str(pred_label))
+
+########################################################################
+# Linear Regression
 
 linReg(X_train_pca, y_train, X_test_pca, y_test)
-
-
 
 os.chdir(owd)
