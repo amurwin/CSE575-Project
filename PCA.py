@@ -7,6 +7,7 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -40,8 +41,8 @@ n_components = 20
 # Manual PCA
 X_train_mean = X_train - np.mean(X_train)
 covar = np.cov(X_train_mean, rowvar=False)
-w, v = np.linalg.eig(covar)
-q = [(w[i], v[:,i]) for i in range(0, len(w))]
+eigVal, eigVec = np.linalg.eig(covar)
+q = [(eigVal[i], eigVec[:,i]) for i in range(0, len(eigVal))]
 q.sort(key = lambda x: x[0], reverse=True)
 matrix = q[0][1]
 for i in range (1, n_components):
@@ -50,20 +51,31 @@ matrix = matrix.reshape(n_components,-1)
 X_train_pca = np.matmul(X_train, matrix.T)
 X_test_pca = np.matmul(X_test, matrix.T)
 
-# Built in PCA
-pca = PCA(n_components=n_components, svd_solver='full').fit(X_train)
-X_train_pca = pca.transform(X_train)
-X_test_pca = pca.transform(X_test)
-
-# PCA STATS - Using built-in PCA, needs to be transfered over
+explained_variance_ratio = [float(eigVal[i] / sum(eigVal)) for i in range(0, n_components)]
 for i in range(n_components):
-    print('Percentage of variance explained by PC {}: {}'.format(i+1, pca.explained_variance_ratio_[i]))
-print('Total variance explained by 20 PCs: {}'.format(np.sum(pca.explained_variance_ratio_)))
+    print('Percentage of variance explained by PC {}: {}'.format(i+1, explained_variance_ratio[i]))
+print('Total variance explained by 20 PCs: {}'.format(np.sum(explained_variance_ratio)))
 
-fig, ax = plt.subplots(1)
-ax.plot(range(1, 21), [sum(pca.explained_variance_ratio_.tolist()[0:x+1]) for x in range(0, len(pca.explained_variance_ratio_))])
-ax.set_xlabel('Num principle components')
-ax.set_ylabel('Fraction of Total Variance Explained')
+pca_fig, pca_ax = plt.subplots(1)
+pca_ax.plot(range(1, 21), [sum(explained_variance_ratio[0:x+1]) for x in range(0, len(explained_variance_ratio))])
+pca_ax.set_xlabel('Num principle components')
+pca_ax.set_ylabel('Fraction of Total Variance Explained')
+
+
+# Built in PCA
+# pca = PCA(n_components=n_components, svd_solver='full').fit(X_train)
+# X_train_pca = pca.transform(X_train)
+# X_test_pca = pca.transform(X_test)
+
+# # Stats + graph
+# for i in range(n_components):
+#     print('Percentage of variance explained by PC {}: {}'.format(i+1, pca.explained_variance_ratio_[i]))
+# print('Total variance explained by 20 PCs: {}'.format(np.sum(pca.explained_variance_ratio_)))
+
+# fig, ax = plt.subplots(1)
+# ax.plot(range(1, 21), [sum(pca.explained_variance_ratio_.tolist()[0:x+1]) for x in range(0, len(pca.explained_variance_ratio_))])
+# ax.set_xlabel('Num principle components')
+# ax.set_ylabel('Fraction of Total Variance Explained')
 # print graph with `fig`
 
 #####################################################################
@@ -83,11 +95,12 @@ for k in ks:
     # Append the inertia to the list of inertias
     inertias.append(model.inertia_)
 
-plt.plot(ks, inertias, '-o', color='black')
-plt.xlabel('number of clusters, k')
-plt.ylabel('inertia')
-plt.xticks(ks)
-plt.show()
+inertia_fig, intertia_ax = plt.subplots(1)
+intertia_ax.plot(ks, inertias)
+intertia_ax.set_xlabel('Number of Clusters, k')
+intertia_ax.set_ylabel('Inertia, k')
+intertia_ax.set_xticks(ks)
+
 #from kmeans, elbow point is roughly 4
 k_means = cluster.KMeans(n_clusters = 4)
 k_means.fit(X_train_pca)
