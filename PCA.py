@@ -41,7 +41,7 @@ n_components = 20
 # Manual PCA
 X_train_mean = X_train - np.mean(X_train)
 covar = np.cov(X_train_mean, rowvar=False)
-eigVal, eigVec = np.linalg.eig(covar)
+eigVal, eigVec = np.linalg.eigh(covar) # maybe use eigh instead rather than eig, because a covariance matrix is supposed to be symmetric
 q = [(eigVal[i], eigVec[:,i]) for i in range(0, len(eigVal))]
 q.sort(key = lambda x: x[0], reverse=True)
 matrix = q[0][1]
