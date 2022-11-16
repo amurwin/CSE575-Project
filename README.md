@@ -8,7 +8,7 @@ In order to Visualize the data you must run visualizeNetworks.py. If you want to
 
 References
 [1] Alper, Basak, et al. “Weighted Graph Comparison Techniques for Brain Connectivity 
-Analysis.” Www.microsoft.com, 27 Apr. 2013, 
+Analysis.” www.microsoft.com, 27 Apr. 2013, 
 research.microsoft.com/en-us/um/people/nath/docs/brainvis_chi2013.pdf. Accessed 15 
 Sept. 2022.
 [2] Duarte-Carvajalino, Julio M., et al. “Hierarchical Topological Network Analysis of 
