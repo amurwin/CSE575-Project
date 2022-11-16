@@ -22,4 +22,4 @@ for file in dir_list:
     ntm.graphNetwork(f"{path}/{file}")
     # creates node graph visualization
     # additional parameter; type=0 for spring layout, type=1 for circular, type=2 for both(default)
-    ntg.graphNetwork(f"{path}/CSVdata/{file}")
+    ntg.graphNetwork(f"{path}/{file}")
