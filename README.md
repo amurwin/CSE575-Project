@@ -11,11 +11,13 @@ References
 Analysis.” www.microsoft.com, 27 Apr. 2013, 
 research.microsoft.com/en-us/um/people/nath/docs/brainvis_chi2013.pdf. Accessed 15 
 Sept. 2022.
+
 [2] Duarte-Carvajalino, Julio M., et al. “Hierarchical Topological Network Analysis of 
 Anatomical Human Brain Connectivity and Differences Related to Sex and Kinship.” 
 NeuroImage, vol. 59, no. 4, 15 Feb. 2012, pp. 3784–3804, 
 www.sciencedirect.com/science/article/pii/S1053811911012687, 
 10.1016/j.neuroimage.2011.10.096. Accessed 15 Sept. 2022.
+
 [3] “Index of /User/Lakoglu/Courses/95828/S17/Projectsources/brainnetworks.rar.” 
 Www.andrew.cmu.edu, 
 www.andrew.cmu.edu/user/lakoglu/courses/95828/S17/projectsources/brainnetworks.rar. 
