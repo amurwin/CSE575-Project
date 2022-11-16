@@ -6,7 +6,8 @@ We want to classify individual brain networks into three different categories: s
 
 In order to Visualize the data you must run visualizeNetworks.py. If you want to specifically compare two datasets, you must copy the two .csv files from the /CSVdata folder into the /compareData folder and run compareNetworks.py which will produce a matrices graph and a node-link graph.
 
-References
+References:
+
 [1] Alper, Basak, et al. “Weighted Graph Comparison Techniques for Brain Connectivity 
 Analysis.” www.microsoft.com, 27 Apr. 2013, 
 research.microsoft.com/en-us/um/people/nath/docs/brainvis_chi2013.pdf. Accessed 15 
