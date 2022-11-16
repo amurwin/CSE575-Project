@@ -16,6 +16,8 @@ import os
 owd = os.getcwd()
 os.chdir('brainnetworks/CSVdata/')
 
+selection = 'math' #default creativity
+
 data = []
 order = []
 for file in os.listdir():
@@ -27,7 +29,16 @@ sex = getLabel(0, order)
 math = getLabel(1, order)
 creativity = getLabel(2, order)
 
-X_train, X_test, y_train, y_test = train_test_split(data, math, test_size=0.2, random_state=0)
+nanMask = ~(sex.isna() | math.isna() | creativity.isna())
+sex = sex[nanMask]
+math = math[nanMask]
+creativity = creativity[nanMask]
+data = [data[i] for i in range(0,len(data)) if nanMask[i]]
+
+# Used to assist in score calculation function to prevent wrong function/errors
+label_set = sex if selection == 'sex' else math if selection == 'math' else creativity
+
+X_train, X_test, y_train, y_test = train_test_split(data, label_set, test_size=0.2, random_state=0)
 
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
@@ -41,7 +52,7 @@ n_components = 20
 # Manual PCA
 X_train_mean = X_train - np.mean(X_train)
 covar = np.cov(X_train_mean, rowvar=False)
-eigVal, eigVec = np.linalg.eigh(covar) # maybe use eigh instead rather than eig, because a covariance matrix is supposed to be symmetric
+eigVal, eigVec = np.linalg.eig(covar) # maybe use eigh instead rather than eig, because a covariance matrix is supposed to be symmetric
 q = [(eigVal[i], eigVec[:,i]) for i in range(0, len(eigVal))]
 q.sort(key = lambda x: x[0], reverse=True)
 matrix = q[0][1]
@@ -110,32 +121,39 @@ k_means.fit(X_train_pca)
 ########################################################################
 # KNN
 
-#KNN via SKLEARN
-knn_classifier = KNeighborsClassifier()
-knn_classifier.fit(X_train_pca,y_train)
-testResult = knn_classifier.predict(X_test_pca)
-print("KNN Prediction",testResult)
-print("Given Test Data",y_test.tolist())
+# This isn't currently working for creativity, needs to be fixed or just deleted.
+if selection == 'math' or selection == 'sex':
+    #KNN via SKLEARN
+    knn_classifier = KNeighborsClassifier()
+    knn_classifier.fit(X_train_pca,y_train)
+    testResult = knn_classifier.predict(X_test_pca)
+    print("KNN Prediction",testResult)
+    print("Given Test Data",y_test.tolist())
 
 # Manual KNN
 DstType = 1
 k = 5
 
-X_full_pca = np.concatenate((X_train_pca, X_test_pca))
-y_full = np.concatenate((y_train, y_test))
+pred_labels = []
+for i in range(0,len(y_test)):
+    pred_labels.append(knn(X_test_pca[i], y_train, X_train_pca, k, DstType))
+    print('Document ' + str(i) + ' groundtruth ' + str(y_test[i]) + ' predicted as ' + str(pred_labels[-1]))
 
-for i in range(91, len(y_full)):
-    train_label = y_full.copy().tolist()
-    del train_label[i]
-    train_feat = X_full_pca.copy().tolist()
-    del train_feat[i]
-
-    pred_label = knn(X_full_pca[i], train_label, train_feat, k, DstType)
-    print('Document ' + str(i) + ' groundtruth ' + str(y_full[i]) + ' predicted as ' + str(pred_label))
+# Accuracy is calculated as the average of 1 - (|ytrue-ypred| / ytrue) for all test points
+# used for creativity and math
+scores = []
+if selection == 'sex':
+    scores = [(1 if y_test[i] == round(pred_labels[i]) else 0) for i in range(0, len(y_test))]
+else:
+    scores = [(1 - (abs(y_test[i] - pred_labels[i]) / y_test[i])) for i in range(0, len(y_test))]
 
 ########################################################################
 # Linear Regression
 
 linReg(X_train_pca, y_train, X_test_pca, y_test)
+
+
+#KNN Score
+print("Accuracy Score:", sum(scores) / len(scores), '\n\n')
 
 os.chdir(owd)
