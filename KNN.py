@@ -3,9 +3,6 @@ import numpy as np  # rhymes with lumpy
 
 # kNN Evaluation
 # DstType, k self explanatory
-# Train_feature list of all Bag of Words, i.e. 80x2503 matrix
-# Test_feature is the target variable. 1x2503
-# Train label is 80x1 sentiment analysis control
 
 def knn(test_feat, train_label, train_feat, k, DstType):
 
