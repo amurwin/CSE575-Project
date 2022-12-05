@@ -68,7 +68,7 @@ for i in range(n_components):
 print('Total variance explained by 20 PCs: {}'.format(np.sum(explained_variance_ratio)))
 
 pca_fig, pca_ax = plt.subplots(1)
-pca_ax.plot(range(1, 21), [sum(explained_variance_ratio[0:x+1]) for x in range(0, len(explained_variance_ratio))])
+pca_ax.plot(range(1, n_components+1), [sum(explained_variance_ratio[0:x+1]) for x in range(0, len(explained_variance_ratio))])
 pca_ax.set_xlabel('Num principle components')
 pca_ax.set_ylabel('Fraction of Total Variance Explained')
 
