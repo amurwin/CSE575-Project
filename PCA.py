@@ -73,10 +73,7 @@ pca_ax.set_xlabel('Num principle components')
 pca_ax.set_ylabel('Fraction of Total Variance Explained')
 
 
-# Built in PCA
-# pca = PCA(n_components=n_components, svd_solver='full').fit(X_train)
-# X_train_pca = pca.transform(X_train)
-# X_test_pca = pca.transform(X_test)
+
 
 # # Stats + graph
 # for i in range(n_components):
@@ -90,14 +87,14 @@ pca_ax.set_ylabel('Fraction of Total Variance Explained')
 # print graph with `fig`
 
 #####################################################################
-# KMEANS
 
 #plot PCA components to see what K value to use
-PCA_components = pd.DataFrame(X_train_pca)
+
+PCA_components = pd.DataFrame(X_train_pcaKmeans)
 ks = range(1, 10)
 inertias = []
 for k in ks:
-    # Create a KMeans instance with k clusters: model
+    # Create a KMeans.py instance with k clusters: model
     model = KMeans(n_clusters=k)
 
     # Fit model to samples
@@ -111,10 +108,9 @@ intertia_ax.plot(ks, inertias)
 intertia_ax.set_xlabel('Number of Clusters, k')
 intertia_ax.set_ylabel('Inertia, k')
 intertia_ax.set_xticks(ks)
+#plt.show() used to detect elbow point
 
-#from kmeans, elbow point is roughly 4
-k_means = cluster.KMeans(n_clusters = 4)
-k_means.fit(X_train_pca)
+#from kmeans, elbow point is roughly 5
 
 #note: k_means might be useful for data visualization but thats about it
 
