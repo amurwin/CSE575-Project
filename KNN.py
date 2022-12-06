@@ -5,7 +5,6 @@ import numpy as np  # rhymes with lumpy
 # DstType, k self explanatory
 
 def knn(test_feat, train_label, train_feat, k, DstType):
-
     # Calculate distance
     dist = []
     if(DstType == 1):
