@@ -49,8 +49,8 @@ for k in ks:
     inertias.append(model.inertia_)
 
 plt.plot(ks, inertias)
-plt.xlabel('Number of Clusters, k')
-plt.ylabel('Inertia, k')
+plt.xlabel('K')
+plt.ylabel('Objective Function J ')
 plt.show()
 # KMEANS
 k_means = cluster.KMeans(n_clusters= 6)
@@ -59,6 +59,6 @@ kmeansLabel = k_means.fit_predict(X_pca)
 unique_labels = np.unique(kmeansLabel)
 for i in unique_labels:
     plt.scatter(X_pca[kmeansLabel == i , 0] , X_pca[kmeansLabel == i , 1] , label = i)
-plt.title("K-Means Clustering with 5 clusters and PCA")
+plt.title("K-Means Clustering with K = 6")
 plt.legend()
 plt.show()
